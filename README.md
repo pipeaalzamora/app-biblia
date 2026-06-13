@@ -13,7 +13,7 @@ Biblia Help es una aplicación para celulares (Android e iOS) que te ayuda a enc
 ## ✨ Características
 
 - 🔍 **Búsqueda natural**: Escribe como hablas, sin necesidad de conocer referencias bíblicas
-- 🤖 **Inteligencia Artificial**: Usa Google Gemini para entender tus necesidades
+- 🎯 **Detección de temas**: Identifica emociones y necesidades para mostrarte versículos relevantes
 - ⭐ **Favoritos**: Guarda tus versículos preferidos
 - 📜 **Historial**: Revisa tus búsquedas anteriores
 - 🌓 **Modo oscuro**: Protege tus ojos en la noche

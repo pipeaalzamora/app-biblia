@@ -3,15 +3,11 @@ export const CONFIGURACION = {
   // API bíblica pública (Reina Valera 1960). Se usa directamente desde la app.
   URL_BIBLE_API: 'https://bible-api.deno.dev/api',
 
-  // Backend propio (opcional). Solo se usa para sync de favoritos si está disponible.
-  URL_BACKEND: process.env.EXPO_PUBLIC_API_URL || '',
-
   // Configuración de caché
   DURACION_CACHE: 24 * 60 * 60 * 1000, // 24 horas en milisegundos
   MAX_ITEMS_HISTORIAL: 50,
 
   // Timeouts
-  TIMEOUT_API: 15000,
   TIMEOUT_BIBLE_API: 10000,
 
   // Versión de la Biblia (Reina Valera 1960)

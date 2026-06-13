@@ -1,20 +1,9 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CONFIGURACION } from '../config/constantes';
 
 const FAVORITES_KEY = '@biblia_help_favorites';
 const HISTORY_KEY = '@biblia_help_history';
 const THEME_KEY = '@biblia_help_theme';
-
-const syncStateInBackground = async ({ favorites, history, theme }) => {
-  if (!CONFIGURACION.URL_BACKEND) return; // Backend opcional
-  try {
-    const { syncFavorites } = await import('../services/syncService');
-    await syncFavorites(favorites, history, { theme });
-  } catch (syncError) {
-    console.log('Sincronización en segundo plano falló:', syncError.message);
-  }
-};
 
 export const useAppStore = create((set, get) => ({
   // Estado
@@ -37,9 +26,6 @@ export const useAppStore = create((set, get) => ({
         history: historyData ? JSON.parse(historyData) : [],
         theme: themeData || 'claro',
       });
-
-      // Intentar sincronizar con servidor (no bloquear si falla)
-      syncStateInBackground(get());
     } catch (error) {
       console.error('Error cargando datos:', error);
     }
@@ -54,7 +40,6 @@ export const useAppStore = create((set, get) => ({
       const newFavorites = [...favorites, { ...verse, addedAt: Date.now() }];
       set({ favorites: newFavorites });
       await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
-      syncStateInBackground({ ...get(), favorites: newFavorites });
     }
   },
 
@@ -63,7 +48,6 @@ export const useAppStore = create((set, get) => ({
     const newFavorites = favorites.filter(v => v.referencia !== referencia);
     set({ favorites: newFavorites });
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
-    syncStateInBackground({ ...get(), favorites: newFavorites });
   },
 
   isFavorite: (referencia) => {
@@ -80,13 +64,11 @@ export const useAppStore = create((set, get) => ({
     ];
     set({ history: newHistory });
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
-    syncStateInBackground({ ...get(), history: newHistory });
   },
 
   clearHistory: async () => {
     set({ history: [] });
     await AsyncStorage.removeItem(HISTORY_KEY);
-    syncStateInBackground({ ...get(), history: [] });
   },
 
   // Tema
@@ -95,13 +77,11 @@ export const useAppStore = create((set, get) => ({
     const newTheme = theme === 'claro' ? 'oscuro' : 'claro';
     set({ theme: newTheme });
     await AsyncStorage.setItem(THEME_KEY, newTheme);
-    syncStateInBackground({ ...get(), theme: newTheme });
   },
 
   setTheme: async (theme) => {
     set({ theme });
     await AsyncStorage.setItem(THEME_KEY, theme);
-    syncStateInBackground({ ...get(), theme });
   },
 
   // Loading
