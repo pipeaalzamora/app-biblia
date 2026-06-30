@@ -1,7 +1,14 @@
 // Configuración de la aplicación
+import { Platform } from 'react-native';
+
 export const CONFIGURACION = {
   // API bíblica pública (Reina Valera 1960). Se usa directamente desde la app.
   URL_BIBLE_API: 'https://bible-api.deno.dev/api',
+
+  // Endpoint de IA OPCIONAL (respaldo semántico). Si está vacío, la app usa
+  // solo la detección local de temas. Para activarlo, hospeda un endpoint que
+  // reciba { userInput } y devuelva { mensaje, versiculos:[{libro,capitulo,versiculo}] }.
+  URL_IA: process.env.EXPO_PUBLIC_AI_URL || '',
 
   // Configuración de caché
   DURACION_CACHE: 24 * 60 * 60 * 1000, // 24 horas en milisegundos
@@ -13,6 +20,20 @@ export const CONFIGURACION = {
   // Versión de la Biblia (Reina Valera 1960)
   VERSION_BIBLIA: 'rv1960',
   NOMBRE_VERSION: 'RV1960',
+};
+
+// Tipografía. Para el texto bíblico usamos una serif del sistema (sin assets):
+// transmite una sensación de "escritura" más cálida y legible.
+export const TIPOGRAFIA = {
+  serif: Platform.select({ ios: 'Georgia', android: 'serif', default: 'serif' }),
+};
+
+// Escalas de tamaño de fuente para accesibilidad.
+export const ESCALAS_FUENTE = {
+  pequena: 0.9,
+  normal: 1,
+  grande: 1.15,
+  extra: 1.3,
 };
 
 // Paleta de colores y sistema de diseño

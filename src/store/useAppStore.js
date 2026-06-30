@@ -4,31 +4,40 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const FAVORITES_KEY = '@biblia_help_favorites';
 const HISTORY_KEY = '@biblia_help_history';
 const THEME_KEY = '@biblia_help_theme';
+const FONT_SCALE_KEY = '@biblia_help_font_scale';
 
 export const useAppStore = create((set, get) => ({
   // Estado
   favorites: [],
   history: [],
   theme: 'claro',
+  fontScale: 1,
   isLoading: false,
 
   // Cargar datos persistidos
   loadPersistedData: async () => {
     try {
-      const [favoritesData, historyData, themeData] = await Promise.all([
+      const [favoritesData, historyData, themeData, fontScaleData] = await Promise.all([
         AsyncStorage.getItem(FAVORITES_KEY),
         AsyncStorage.getItem(HISTORY_KEY),
         AsyncStorage.getItem(THEME_KEY),
+        AsyncStorage.getItem(FONT_SCALE_KEY),
       ]);
 
       set({
         favorites: favoritesData ? JSON.parse(favoritesData) : [],
         history: historyData ? JSON.parse(historyData) : [],
         theme: themeData || 'claro',
+        fontScale: fontScaleData ? parseFloat(fontScaleData) : 1,
       });
     } catch (error) {
       console.error('Error cargando datos:', error);
     }
+  },
+
+  setFontScale: async (fontScale) => {
+    set({ fontScale });
+    await AsyncStorage.setItem(FONT_SCALE_KEY, String(fontScale));
   },
 
   // Favoritos

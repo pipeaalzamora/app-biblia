@@ -6,12 +6,13 @@ import ShareButton from './ShareButton';
 import ShareImageButton from './ShareImageButton';
 import VerseImageCard from './VerseImageCard';
 import { useAppStore } from '../store/useAppStore';
-import { TEMAS } from '../config/constantes';
+import { TEMAS, TIPOGRAFIA } from '../config/constantes';
 
 export default function VerseCard({ verse }) {
   const imageCardRef = useRef(null);
-  const { theme } = useAppStore();
+  const { theme, fontScale } = useAppStore();
   const colors = TEMAS[theme] || TEMAS.claro;
+  const escala = fontScale || 1;
 
   if (!verse) return null;
 
@@ -33,7 +34,19 @@ export default function VerseCard({ verse }) {
         style={styles.accent}
       />
 
-      <Text style={[styles.text, { color: colors.text }]}>{verse.texto}</Text>
+      <Text
+        style={[
+          styles.text,
+          {
+            color: colors.text,
+            fontFamily: TIPOGRAFIA.serif,
+            fontSize: 19 * escala,
+            lineHeight: 30 * escala,
+          },
+        ]}
+      >
+        {verse.texto}
+      </Text>
 
       <View style={[styles.divider, { backgroundColor: colors.border }]} />
 

@@ -7,6 +7,7 @@ import {
 import { detectarTema, obtenerTemaPorId } from '../data/temasVersiculos';
 import { useAppStore } from '../store/useAppStore';
 import { saveVerseOffline, searchOfflineVerses } from '../services/offlineService';
+import { sugerirVersiculosIA } from '../services/aiService';
 
 const LOADING_STATES = {
   IDLE: 'idle',
@@ -102,6 +103,14 @@ export const useVerseSearch = () => {
         await finalizarConVersiculos(resultado.versiculos, resultado.mensaje, termino);
         return;
       }
+    }
+
+    // Respaldo con IA (si está configurada): entiende texto libre que la
+    // detección local no captó.
+    const ia = await sugerirVersiculosIA(termino);
+    if (ia.success && ia.versiculos.length > 0) {
+      await finalizarConVersiculos(ia.versiculos, ia.mensaje, termino);
+      return;
     }
 
     const resultado = await searchVerses(termino, { take: 15 });

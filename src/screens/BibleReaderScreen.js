@@ -5,23 +5,28 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/useAppStore';
-import { TEMAS } from '../config/constantes';
+import { TEMAS, TIPOGRAFIA } from '../config/constantes';
 import { LIBROS_BIBLIA } from '../data/librosBiblia';
 import { getChapter } from '../services/bibleApiService';
+import {
+  saveChapterOffline,
+  getChapterOffline,
+} from '../services/offlineService';
 import FavoriteButton from '../components/FavoriteButton';
 import ShareButton from '../components/ShareButton';
 import GradientHeader from '../components/GradientHeader';
+import SkeletonVerse from '../components/SkeletonVerse';
 
 const VISTA = { LIBROS: 'libros', CAPITULOS: 'capitulos', LECTURA: 'lectura' };
 
 export default function BibleReaderScreen() {
-  const { theme } = useAppStore();
+  const { theme, fontScale } = useAppStore();
   const colors = TEMAS[theme] || TEMAS.claro;
+  const escala = fontScale || 1;
 
   const [vista, setVista] = useState(VISTA.LIBROS);
   const [filtro, setFiltro] = useState('');
@@ -35,20 +40,46 @@ export default function BibleReaderScreen() {
     setIsLoading(true);
     setError('');
     const result = await getChapter(libro.id, capitulo);
+
     if (result.success) {
       setVersiculos(result.versiculos);
+      // Guardar en caché para lectura sin conexión.
+      saveChapterOffline(libro.id, capitulo, result.versiculos).catch(() => {});
     } else {
-      setVersiculos([]);
-      setError(result.error);
+      // Sin red: intentar servir desde la caché local.
+      const cache = await getChapterOffline(libro.id, capitulo);
+      if (cache && cache.length > 0) {
+        setVersiculos(cache);
+        setError('');
+      } else {
+        setVersiculos([]);
+        setError(result.error);
+      }
     }
     setIsLoading(false);
+  }, []);
+
+  // Prefetch silencioso de capítulos vecinos para navegación instantánea.
+  const prefetchVecinos = useCallback(async (libro, capitulo) => {
+    const candidatos = [capitulo - 1, capitulo + 1].filter(
+      (c) => c >= 1 && c <= libro.capitulos
+    );
+    for (const c of candidatos) {
+      const yaCacheado = await getChapterOffline(libro.id, c);
+      if (yaCacheado) continue;
+      const result = await getChapter(libro.id, c);
+      if (result.success) {
+        saveChapterOffline(libro.id, c, result.versiculos).catch(() => {});
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (vista === VISTA.LECTURA && libroActivo && capituloActivo) {
       cargarCapitulo(libroActivo, capituloActivo);
+      prefetchVecinos(libroActivo, capituloActivo);
     }
-  }, [vista, libroActivo, capituloActivo, cargarCapitulo]);
+  }, [vista, libroActivo, capituloActivo, cargarCapitulo, prefetchVecinos]);
 
   const librosFiltrados = LIBROS_BIBLIA.filter((libro) =>
     libro.nombre
@@ -160,7 +191,7 @@ export default function BibleReaderScreen() {
       {vista === VISTA.LECTURA && (
         <View style={styles.body}>
           {isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+            <SkeletonVerse count={4} />
           ) : error ? (
             <Text style={[styles.error, { color: colors.danger }]}>{error}</Text>
           ) : (
@@ -178,7 +209,17 @@ export default function BibleReaderScreen() {
                     <Text style={[styles.verseNumber, { color: colors.primary }]}>
                       {item.numero}
                     </Text>
-                    <Text style={[styles.verseText, { color: colors.textSecondary }]}>
+                    <Text
+                      style={[
+                        styles.verseText,
+                        {
+                          color: colors.textSecondary,
+                          fontFamily: TIPOGRAFIA.serif,
+                          fontSize: 17 * escala,
+                          lineHeight: 28 * escala,
+                        },
+                      ]}
+                    >
                       {item.texto}
                     </Text>
                   </View>

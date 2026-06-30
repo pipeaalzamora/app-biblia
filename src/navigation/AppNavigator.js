@@ -10,11 +10,9 @@ import { TEMAS } from '../config/constantes';
 
 // Screens
 import HomeScreen from '../screens/HomeScreen';
-import FavoritesScreen from '../screens/FavoritesScreen';
-import HistoryScreen from '../screens/HistoryScreen';
+import SavedScreen from '../screens/SavedScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import DailyVerseScreen from '../screens/DailyVerseScreen';
 import BibleReaderScreen from '../screens/BibleReaderScreen';
 import AuthScreen from '../screens/AuthScreen';
 
@@ -34,16 +32,12 @@ function MainTabs() {
 
           if (route.name === 'Inicio') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Diario') {
-            iconName = focused ? 'calendar' : 'calendar-outline';
           } else if (route.name === 'Leer') {
             iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Buscar') {
             iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Favoritos') {
+          } else if (route.name === 'Guardados') {
             iconName = focused ? 'star' : 'star-outline';
-          } else if (route.name === 'Historial') {
-            iconName = focused ? 'time' : 'time-outline';
           } else if (route.name === 'Ajustes') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
@@ -71,11 +65,9 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Diario" component={DailyVerseScreen} />
       <Tab.Screen name="Leer" component={BibleReaderScreen} />
       <Tab.Screen name="Buscar" component={SearchScreen} />
-      <Tab.Screen name="Favoritos" component={FavoritesScreen} />
-      <Tab.Screen name="Historial" component={HistoryScreen} />
+      <Tab.Screen name="Guardados" component={SavedScreen} />
       <Tab.Screen name="Ajustes" component={SettingsScreen} />
     </Tab.Navigator>
   );

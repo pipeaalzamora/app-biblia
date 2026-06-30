@@ -32,6 +32,8 @@ export default function ShareButton({ verse, style }) {
       onPress={handleShare}
       style={[styles.button, style]}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      accessibilityRole="button"
+      accessibilityLabel="Compartir versículo como texto"
     >
       <Ionicons name="share-social-outline" size={22} color={colors.primary} />
     </TouchableOpacity>

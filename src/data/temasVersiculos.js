@@ -176,24 +176,76 @@ export const CATALOGO_TEMAS = [
 export const obtenerTemaPorId = (id) =>
   CATALOGO_TEMAS.find((tema) => tema.id === id) || null;
 
-// Busca el tema que mejor coincide con un texto libre escrito por el usuario.
-export const detectarTema = (texto) => {
-  if (!texto || typeof texto !== 'string') return null;
-
-  const normalizado = texto
+// Normaliza texto: minúsculas, sin acentos, sin signos.
+const normalizar = (texto) =>
+  (texto || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+// Sinónimos / expresiones coloquiales por tema. Amplían la cobertura del texto
+// libre sin necesidad de un modelo de IA externo.
+const SINONIMOS_TEMA = {
+  ansiedad: ['agobiado', 'agobio', 'angustia', 'angustiado', 'inquieto', 'no puedo dormir', 'me ahogo', 'presion', 'abrumado'],
+  tristeza: ['vacio', 'vacia', 'desanimado', 'sin ganas', 'desesperanza', 'melancolia', 'me siento mal', 'destrozado', 'roto'],
+  miedo: ['inseguro', 'inseguridad', 'amenaza', 'incertidumbre', 'tengo miedo', 'me da miedo', 'aterrado'],
+  soledad: ['nadie me entiende', 'sin amigos', 'me siento solo', 'me dejaron', 'aislamiento', 'abandono'],
+  esperanza: ['no veo salida', 'rendirme', 'no se que hacer', 'sin futuro', 'quiero rendirme', 'todo va mal'],
+  fe: ['dudo', 'no creo', 'confiar en dios', 'dudas', 'creer', 'fortalecer mi fe'],
+  paz: ['intranquilo', 'sin paz', 'conflicto', 'pelea', 'discusion', 'necesito calma', 'descansar'],
+  fortaleza: ['no puedo mas', 'sin fuerzas', 'rendido', 'derrotado', 'me rindo', 'cansancio', 'agotamiento'],
+  amor: ['mi pareja', 'mi esposo', 'mi esposa', 'mi novia', 'mi novio', 'relacion', 'desamor', 'corazon roto', 'matrimonio'],
+  perdon: ['rencor', 'odio', 'me hicieron dano', 'no puedo perdonar', 'resentimiento', 'culpable', 'me arrepiento'],
+  gratitud: ['agradecer', 'dar gracias', 'bendecido', 'contento', 'feliz', 'agradezco'],
+  sabiduria: ['no se que decidir', 'decision dificil', 'que camino', 'necesito guia', 'orientacion', 'consejo'],
+};
+
+// Construye la lista de términos (palabras clave + sinónimos) por tema.
+const terminosDeTema = (tema) => [
+  ...(tema.palabrasClave || []),
+  ...(SINONIMOS_TEMA[tema.id] || []),
+];
+
+/**
+ * Detecta el tema que mejor coincide con un texto libre usando puntaje.
+ * Suma coincidencias de palabras clave y expresiones; gana el mayor puntaje.
+ * Devuelve null solo si no hay ninguna coincidencia.
+ */
+export const detectarTema = (texto) => {
+  const normalizado = normalizar(texto);
+  if (!normalizado) return null;
+
+  const tokens = normalizado.split(' ');
+  let mejor = null;
+  let mejorPuntaje = 0;
 
   for (const tema of CATALOGO_TEMAS) {
-    const coincide = tema.palabrasClave.some((palabra) => {
-      const clave = palabra
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
-      return normalizado.includes(clave);
-    });
-    if (coincide) return tema;
+    let puntaje = 0;
+
+    for (const termino of terminosDeTema(tema)) {
+      const clave = normalizar(termino);
+      if (!clave) continue;
+
+      if (clave.includes(' ')) {
+        // Frase completa: coincidencia fuerte.
+        if (normalizado.includes(clave)) puntaje += 3;
+      } else if (tokens.includes(clave)) {
+        // Palabra exacta como token.
+        puntaje += 2;
+      } else if (normalizado.includes(clave)) {
+        // Coincidencia parcial (dentro de otra palabra).
+        puntaje += 1;
+      }
+    }
+
+    if (puntaje > mejorPuntaje) {
+      mejorPuntaje = puntaje;
+      mejor = tema;
+    }
   }
 
-  return null;
+  return mejor;
 };

@@ -22,12 +22,57 @@ export const initDatabase = async () => {
       CREATE INDEX IF NOT EXISTS idx_tema ON verses(tema);
       CREATE INDEX IF NOT EXISTS idx_popularidad ON verses(popularidad DESC);
       CREATE INDEX IF NOT EXISTS idx_referencia ON verses(referencia);
+
+      CREATE TABLE IF NOT EXISTS chapters (
+        clave TEXT PRIMARY KEY,
+        libro TEXT NOT NULL,
+        capitulo INTEGER NOT NULL,
+        datos TEXT NOT NULL,
+        actualizado INTEGER NOT NULL
+      );
     `);
 
     return true;
   } catch (error) {
     console.error('Error inicializando base de datos:', error);
     return false;
+  }
+};
+
+// Guarda un capítulo completo (lista de versículos) para lectura sin conexión.
+export const saveChapterOffline = async (libro, capitulo, payload) => {
+  if (!db) await initDatabase();
+  if (!db) return false;
+
+  try {
+    const clave = `${libro}:${capitulo}`;
+    await db.runAsync(
+      `INSERT OR REPLACE INTO chapters (clave, libro, capitulo, datos, actualizado)
+       VALUES (?, ?, ?, ?, ?)`,
+      [clave, libro, capitulo, JSON.stringify(payload), Date.now()]
+    );
+    return true;
+  } catch (error) {
+    console.error('Error guardando capítulo offline:', error);
+    return false;
+  }
+};
+
+// Recupera un capítulo cacheado. Devuelve null si no existe.
+export const getChapterOffline = async (libro, capitulo) => {
+  if (!db) await initDatabase();
+  if (!db) return null;
+
+  try {
+    const clave = `${libro}:${capitulo}`;
+    const row = await db.getFirstAsync(
+      'SELECT datos FROM chapters WHERE clave = ?',
+      [clave]
+    );
+    return row ? JSON.parse(row.datos) : null;
+  } catch (error) {
+    console.error('Error leyendo capítulo offline:', error);
+    return null;
   }
 };
 

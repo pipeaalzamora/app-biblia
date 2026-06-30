@@ -60,6 +60,8 @@ export default function ShareImageButton({ viewRef }) {
       onPress={handleShareImage}
       disabled={isGenerating}
       style={{ padding: 8 }}
+      accessibilityRole="button"
+      accessibilityLabel="Compartir versículo como imagen"
     >
       {isGenerating ? (
         <ActivityIndicator size="small" color={colors.primary} />

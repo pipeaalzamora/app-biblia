@@ -18,6 +18,8 @@ export default function ThemeToggle() {
       style={styles.button}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={theme === 'claro' ? 'Activar modo oscuro' : 'Activar modo claro'}
     >
       <Ionicons
         name={theme === 'claro' ? 'moon' : 'sunny'}

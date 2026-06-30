@@ -25,6 +25,9 @@ export default function FavoriteButton({ verse, size = 22, color = '#5B6CF0' }) 
       onPress={handlePress}
       style={styles.button}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      accessibilityRole="button"
+      accessibilityState={{ selected: favorite }}
+      accessibilityLabel={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
     >
       <Ionicons name={favorite ? 'star' : 'star-outline'} size={size} color={color} />
     </TouchableOpacity>

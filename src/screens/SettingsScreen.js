@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/useAppStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { TEMAS } from '../config/constantes';
+import { TEMAS, ESCALAS_FUENTE } from '../config/constantes';
 import {
   areNotificationsAvailable,
   requestNotificationPermissions,
@@ -23,10 +23,9 @@ import { seedPopularVerses } from '../services/offlineService';
 import GradientHeader from '../components/GradientHeader';
 
 export default function SettingsScreen() {
-  const { theme, toggleTheme } = useAppStore();
+  const { theme, toggleTheme, fontScale, setFontScale } = useAppStore();
   const { user, logout, firebaseConfigured } = useAuthStore();
   const colors = TEMAS[theme] || TEMAS.claro;
-
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationTime, setNotificationTime] = useState({ hour: 8, minute: 0 });
   const [notificationsAvailable, setNotificationsAvailable] = useState(false);
@@ -145,6 +144,47 @@ export default function SettingsScreen() {
               trackColor={{ false: colors.border, true: colors.primary }}
             />
           </View>
+
+          <Text style={[styles.settingDescription, { color: colors.textLight }]}>
+            Tamaño del texto bíblico
+          </Text>
+          <View style={styles.fontRow}>
+            {[
+              { id: 'pequena', label: 'A', size: 14 },
+              { id: 'normal', label: 'A', size: 17 },
+              { id: 'grande', label: 'A', size: 20 },
+              { id: 'extra', label: 'A', size: 23 },
+            ].map((opcion) => {
+              const valor = ESCALAS_FUENTE[opcion.id];
+              const activo = Math.abs((fontScale || 1) - valor) < 0.001;
+              return (
+                <TouchableOpacity
+                  key={opcion.id}
+                  style={[
+                    styles.fontButton,
+                    {
+                      backgroundColor: activo ? colors.primary : colors.surface,
+                      borderColor: activo ? colors.primary : colors.border,
+                    },
+                  ]}
+                  onPress={() => setFontScale(valor)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Tamaño de fuente ${opcion.id}`}
+                  accessibilityState={{ selected: activo }}
+                >
+                  <Text
+                    style={{
+                      color: activo ? colors.onPrimary : colors.text,
+                      fontSize: opcion.size,
+                      fontWeight: '700',
+                    }}
+                  >
+                    {opcion.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -259,5 +299,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     marginLeft: 16,
+  },
+  fontRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  fontButton: {
+    flex: 1,
+    height: 52,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

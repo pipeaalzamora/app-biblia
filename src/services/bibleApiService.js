@@ -1,12 +1,6 @@
-import axios from 'axios';
 import { CONFIGURACION } from '../config/constantes';
 import { obtenerLibroPorId } from '../data/librosBiblia';
-
-const api = axios.create({
-  baseURL: CONFIGURACION.URL_BIBLE_API,
-  timeout: CONFIGURACION.TIMEOUT_BIBLE_API,
-  headers: { Accept: 'application/json' },
-});
+import { apiGet } from './apiClient';
 
 const { VERSION_BIBLIA, NOMBRE_VERSION } = CONFIGURACION;
 
@@ -80,7 +74,7 @@ export const getVersesByReference = async ({ libro, capitulo, versiculo }) => {
   const { reference } = built;
 
   try {
-    const { data } = await api.get(
+    const { data } = await apiGet(
       `/read/${VERSION_BIBLIA}/${reference.libro}/${reference.capitulo}/${reference.versiculo}`
     );
 
@@ -113,7 +107,7 @@ export const getChapter = async (libro, capitulo) => {
   }
 
   try {
-    const { data } = await api.get(`/read/${VERSION_BIBLIA}/${slug}/${chapter}`);
+    const { data } = await apiGet(`/read/${VERSION_BIBLIA}/${slug}/${chapter}`);
     const book = nombreLibro(slug);
 
     const versiculos = (data?.vers || []).map((item) => ({
@@ -151,7 +145,7 @@ export const searchVerses = async (query, { take = 20, page = 1 } = {}) => {
   }
 
   try {
-    const { data } = await api.get(`/read/${VERSION_BIBLIA}/search`, {
+    const { data } = await apiGet(`/read/${VERSION_BIBLIA}/search`, {
       params: { q: term, take, page },
     });
 

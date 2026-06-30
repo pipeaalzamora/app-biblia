@@ -9,7 +9,6 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +20,8 @@ import PastoralMessage from '../components/PastoralMessage';
 import ThemeToggle from '../components/ThemeToggle';
 import GradientHeader from '../components/GradientHeader';
 import TopicChips from '../components/TopicChips';
+import SkeletonVerse from '../components/SkeletonVerse';
+import DailyVerseCard from '../components/DailyVerseCard';
 import { useVerseSearch } from '../hooks/useVerseSearch';
 
 export default function HomeScreen() {
@@ -116,14 +117,20 @@ export default function HomeScreen() {
           </Text>
           <TopicChips selectedId={selectedTopic} onSelect={handleTopicSelect} />
 
+          {!isLoading && !errorMessage && currentVerses.length === 0 ? (
+            <View style={styles.dailyBlock}>
+              <DailyVerseCard />
+            </View>
+          ) : null}
+
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={colors.primary} />
               {loadingMessage ? (
                 <Text style={[styles.loadingText, { color: colors.primary }]}>
                   {loadingMessage}
                 </Text>
               ) : null}
+              <SkeletonVerse count={3} />
             </View>
           )}
 
@@ -166,15 +173,6 @@ export default function HomeScreen() {
             <Text style={[styles.message, { color: colors.textLight }]}>
               {errorMessage}
             </Text>
-          ) : null}
-
-          {!isLoading && !errorMessage && currentVerses.length === 0 ? (
-            <View style={styles.placeholder}>
-              <Ionicons name="book-outline" size={48} color={colors.textLight} />
-              <Text style={[styles.placeholderText, { color: colors.textLight }]}>
-                Escribe cómo te sientes o elige un tema para recibir versículos.
-              </Text>
-            </View>
           ) : null}
         </ScrollView>
 
@@ -266,6 +264,9 @@ const styles = StyleSheet.create({
   block: {
     paddingHorizontal: 16,
   },
+  dailyBlock: {
+    marginTop: 20,
+  },
   verseWrapper: {
     paddingHorizontal: 16,
     marginBottom: 16,
@@ -278,13 +279,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   loadingContainer: {
-    alignItems: 'center',
-    marginTop: 40,
+    marginTop: 24,
     gap: 12,
   },
   loadingText: {
     fontSize: 15,
     fontWeight: '500',
+    textAlign: 'center',
   },
   placeholder: {
     alignItems: 'center',
