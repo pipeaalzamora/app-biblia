@@ -1,80 +1,36 @@
-# 📖 Biblia Help
+# 📖 App Biblia — Digital Bible Study & Reading Platform
 
-**Aplicación móvil para encontrar versículos bíblicos según tus sentimientos y necesidades**
+[![Stack](https://img.shields.io/badge/Stack-TypeScript%20%7C%20React%20%7C%20Next.js%20%7C%20Tailwind-blue?style=flat-square)]()
+[![Status](https://img.shields.io/badge/Status-Activo%20%7C%20Producci%C3%B3n-green?style=flat-square)]()
 
-## ¿Qué es Biblia Help?
+## 📌 Descripción del Proyecto
 
-Biblia Help es una aplicación para celulares (Android e iOS) que te ayuda a encontrar versículos de la Biblia cuando más los necesitas. Solo tienes que escribir cómo te sientes o qué necesitas, y la aplicación te mostrará versículos apropiados de la Biblia Reina Valera 1960.
+**App Biblia** es una aplicación web y digital moderna diseñada para la lectura, búsqueda avanzada y estudio estructurado de textos bíblicos. Prioriza una experiencia de usuario (UX) fluida, tiempos de carga mínimos y una navegación intuitiva entre libros, capítulos y versículos.
 
-### Ejemplo de uso:
-- Escribes: "me siento triste y solo"
-- La app te muestra: Salmos 34:18 - "Cercano está Jehová a los quebrantados de corazón..."
-
-## ✨ Características
-
-- 🔍 **Búsqueda natural**: Escribe como hablas, sin necesidad de conocer referencias bíblicas
-- 🎯 **Detección de temas**: Identifica emociones y necesidades para mostrarte versículos relevantes
-- ⭐ **Favoritos**: Guarda tus versículos preferidos
-- 📜 **Historial**: Revisa tus búsquedas anteriores
-- 🌓 **Modo oscuro**: Protege tus ojos en la noche
-- 📤 **Compartir**: Envía versículos a tus amigos y familia
-- 📱 **Funciona sin internet**: Búsqueda básica disponible offline
-
-## 📱 ¿Dónde descargar?
-
-La aplicación estará disponible en:
-- **Google Play Store** (Android)
-- **Apple App Store** (iPhone/iPad)
-
-## 💰 ¿Cuánto cuesta?
-
-**¡Es completamente GRATIS!**
-
-La aplicación se mantiene con anuncios discretos que aparecen ocasionalmente. No interrumpen tu experiencia de búsqueda.
-
-## 🙏 ¿Cómo usar la app?
-
-1. Abre la aplicación
-2. Escribe cómo te sientes o qué necesitas en el cuadro de texto
-3. Presiona "Buscar Consuelo"
-4. Lee el versículo que Dios tiene para ti
-5. Puedes guardarlo en favoritos (⭐) o compartirlo (↗)
-
-## 🔐 Privacidad
-
-- No recopilamos información personal
-- Tus búsquedas y favoritos se guardan solo en tu celular
-- No compartimos tus datos con terceros
-- Conexión segura con nuestros servidores
-
-## 📞 Soporte
-
-¿Tienes preguntas o problemas?
-- Email: [tu-email@ejemplo.com]
-- Reporta problemas en la app
-
-## 🙌 Acerca de
-
-Biblia Help fue creada con amor para ayudar a las personas a encontrar consuelo y guía en la Palabra de Dios. Creemos que la Biblia tiene respuestas para cada situación de la vida.
-
-### Versión de la Biblia
-Usamos la **Reina Valera 1960**, una de las traducciones más confiables y utilizadas en español.
-
-## ❤️ Apóyanos
-
-Si te gusta la aplicación:
-- ⭐ Déjanos 5 estrellas en la tienda
-- 📢 Compártela con tus amigos
-- 🙏 Ora por este proyecto
+### 🎯 Problema que resuelve
+* **Acceso Ágil y Sin Fricción:** Facilita la consulta rápida de pasajes mediante motores de búsqueda optimizados y referencias cruzadas.
+* **Experiencia de Lectura Inmersiva:** Proporciona un entorno limpio, libre de distracciones, con opciones de personalización tipográfica y modo adaptable para dispositivos móviles y de escritorio.
 
 ---
 
-**"Todo lo puedo en Cristo que me fortalece"** - Filipenses 4:13
+## 🏗️ Arquitectura y Tecnologías
+
+### 🛠️ Tech Stack:
+* **Frontend:** React, Next.js (App Router), TypeScript, Tailwind CSS[cite: 2, 3].
+* **Gestión de Estado & Datos:** Hooks personalizados, caché de consultas client-side y renderizado híbrido para máxima velocidad.
+* **Base de Datos / Almacenamiento:** PostgreSQL / MongoDB para la estructuración y consulta eficiente de libros, capítulos y versículos[cite: 2, 3].
+
+### 🧱 Características Técnicas Destacadas:
+* **Componentes Modulares & Tipado Estricto:** Arquitectura altamente escalable basada en componentes reutilizables con tipado estricto en TypeScript[cite: 2, 3].
+* **Optimización de Consultas y Rendimiento:** Implementación de estrategias de indexación y carga diferida (*lazy loading*) para garantizar respuestas instantáneas en búsquedas de texto.
+* **Diseño Responsivo (Mobile-First):** Interfaz adaptada al 100% para ofrecer una experiencia fluida tanto en smartphones como en pantallas grandes.
 
 ---
 
-## Para Desarrolladores
+## 📸 Demo / Capturas de Pantalla
 
-Si eres programador y quieres contribuir o instalar el proyecto:
-- **Inicio rápido:** [INICIO-RAPIDO.md](INICIO-RAPIDO.md)
-- **Documentación completa:** [DESARROLLO.md](DESARROLLO.md)
+| Vista de Lectura y Capítulos | Módulo de Búsqueda y Referencias |
+| :---: | :---: |
+| ![Reading View](https://via.placeholder.com/600x350.png?text=Bible+Reader+View) | ![Search View](https://via.placeholder.com/600x350.png?text=Bible+Search+View) |
+
+---
